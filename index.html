@@ -67,9 +67,9 @@ main{padding:18px 16px 28px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .tile{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 11px;min-width:0}
 .tl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);line-height:1.25;min-height:26px}
-.trow{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px}
+.trow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2px 6px;margin-top:2px}
 .tv2{font-size:26px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
-.badge{font-size:11px;font-weight:650;padding:1px 6px;border-radius:4px;color:var(--onbadge);white-space:nowrap}
+.badge{font-size:11px;font-weight:650;padding:1px 6px;border-radius:4px;color:var(--onbadge);white-space:nowrap;max-width:100%}
 .badge.up{background:var(--up)} .badge.down{background:var(--down)}
 .badge.neu{background:var(--wash);color:var(--ink2);border:1px solid var(--border);font-weight:600}
 .tf{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -122,6 +122,8 @@ h3{font-size:14px;font-weight:650}
 .bval b{color:var(--ink);font-weight:650}
 .dtrack{position:relative;height:22px;background:linear-gradient(var(--base),var(--base)) center/1px 100% no-repeat}
 .dbar{position:absolute;top:0;height:22px}
+.pnh{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:12px 0 2px}
+.pnh:first-of-type{margin-top:4px}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px;font-size:12px;color:var(--ink2)}
 .lk{display:inline-flex;align-items:center;gap:6px}
 .lk i{display:inline-block;width:12px;height:12px;border-radius:2px}
@@ -200,7 +202,7 @@ ul.plain li + li{margin-top:4px}
   <div class="wrap">
     <div class="bar">
       <div class="logo" aria-hidden="true">AH</div>
-      <div class="ttl"><h1>Aircash in Hungary</h1><p>Market position and business development. Independent analysis of public sources.</p></div>
+      <div class="ttl"><h1>Aircash in Hungary</h1><p>Market position and business development. Independent analysis of public sources and information provided by Aircash.</p></div>
       <nav role="tablist" aria-label="Dashboard pages" id="tabs"></nav>
       <div class="right"><span>Report: 20 Oct 2026</span><button class="theme" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: Auto</button></div>
     </div>
@@ -408,11 +410,11 @@ function page1(root){
 
   var tiles = kpis([
     {label:'Points matching the filters', value:nf(N), badge:{t:pct(N, TOTAL) + '% of ' + TOTAL, k:'neu'}, foot:'physical points on the Hungarian map', bar:pct(N, TOTAL)},
-    {label:'Withdrawal-enabled points', value:nf(WD), badge:{t: N ? pct(WD, N) + '% of matching' : '-', k:'neu'}, foot:'shown only at Exclusive Change', bar:pct(WD, TOTAL)},
+    {label:'Withdrawal-enabled points', value:nf(WD), badge:{t: N ? pct(WD, N) + '% of matching' : '-', k:'neu'}, foot:'shown only at Exclusive Change', bar: N ? pct(WD, N) : 0},
     {label:'Exclusive Change points', value:nf(EC), badge:{t:'~' + pct(EC, 300) + '%', k:'neu'}, foot:'of nearly 300 branches', est:true, bar:pct(EC, 300)},
-    {label:'OMV points', value:nf(OMV), badge:{t:'no withdrawal', k:'neu'}, foot:'data from 18 Jun 2026', bar:pct(OMV, TOTAL)},
+    {label:'OMV points', value:nf(OMV), badge:{t:'not marked', k:'neu'}, foot:'withdrawal; data from 18 Jun 2026'},
     {label:'Of which in Budapest', value:nf(B), badge:{t: N ? pct(B, N) + '%' : '-', k:'neu'}, foot:'all points: 90 of 271 = 33%', est:true, bar: N ? pct(B, N) : 0},
-    {label:'Signed, not on the map', value:'2', badge:{t:'▼ 0 points', k:'down'}, foot:'MOL, Lapker (Aircash information)'}
+    {label:'Contracts not on the map', value:'2', badge:{t:'▼ 0 points', k:'down'}, foot:'MOL, Lapker (per Aircash)'}
   ]);
 
   var cA = card({
@@ -472,12 +474,12 @@ function page1(root){
 
 /* ---------- PAGE 2: potential ---------- */
 var NET = [
-  {id:'tob', n:'National tobacco shops', v:5619, today:0, val:'5,619', note:'4,977 concession + 642 designated shops, 15 Dec 2025 (SZTFH). Not a chain: run by concession holders.'},
-  {id:'coop', n:'Coop', v:2100, today:0, val:'~2,100', note:'Close to 2,100 stores in about 1,400 settlements; the only grocery store in 879 settlements (VG, 21 May 2026).'},
-  {id:'ec', n:'Exclusive Change', v:300, today:109, val:'~300', note:'Nearly 300 branches by its own account (exclusive.hu); Aircash is in 109.'},
-  {id:'lidl', n:'Lidl', v:210, today:0, val:'210', note:'210 stores, November 2024 (Telex).'},
-  {id:'aldi', n:'Aldi', v:180, today:0, val:'180+', note:'More than 180 stores (aldi.hu).'},
-  {id:'auch', n:'Auchan', v:24, today:0, val:'24', note:'24 stores and 19 filling stations (Xpatloop, 20 Feb 2026).'}
+  {id:'tob', n:'National tobacco shops', v:5619, today:0, val:'5,619', sub:'concession and designated shops', note:'4,977 concession + 642 designated shops, 15 Dec 2025 (SZTFH). Not a chain: run by concession holders.'},
+  {id:'coop', n:'Coop', v:2100, today:0, val:'~2,100', sub:'in about 1,400 settlements', note:'Close to 2,100 stores in about 1,400 settlements; the only grocery store in 879 settlements (VG, 21 May 2026).'},
+  {id:'ec', n:'Exclusive Change', v:300, today:109, val:'~300', sub:'Aircash: 109 of nearly 300', note:'Nearly 300 branches by its own account (exclusive.hu); Aircash is in 109.'},
+  {id:'lidl', n:'Lidl', v:210, today:0, val:'210', sub:'stores, Nov 2024', note:'210 stores, November 2024 (Telex).'},
+  {id:'aldi', n:'Aldi', v:180, today:0, val:'180+', sub:'more than 180 stores', note:'More than 180 stores (aldi.hu).'},
+  {id:'auch', n:'Auchan', v:24, today:0, val:'24', sub:'stores, plus 19 filling stations', note:'24 stores and 19 filling stations (Xpatloop, 20 Feb 2026).'}
 ];
 var st2 = {n:new Set()};
 var AT = [
@@ -495,16 +497,19 @@ function page2(root){
   ]);
   var rows = NET.filter(function(a){ return !st2.n.size || st2.n.has(a.id); });
   var cA = card({
-    title:'Potential partner networks vs Aircash today', sub:'Units per network. The vertical line marks Aircash’s 271 points.',
+    title:'Potential partner networks vs Aircash today', sub:'Units per network, on two scales so the smaller networks stay readable. Aircash has 0 points at the tobacco shops, Coop, Lidl, Aldi and Auchan today.',
     chart:function(b){
-      b.append(legend([{c:'var(--ac)', l:'Already an Aircash point'}, {out:true, l:'Not yet connected'}]));
-      b.append(hbars(rows.map(function(a){
+      b.append(legend([{c:'var(--ac)', l:'Already an Aircash point'}, {c:'var(--ac2)', l:'Rest of the network'}]));
+      var mk = function(a){
         var left = a.v - a.today;
-        return {label:a.n, sub:'Aircash today: ' + a.today,
+        return {label:a.n, sub:a.sub,
           segs:[{v:a.today, c:'var(--ac)', tt:a.n + ', Aircash points', tv:nf(a.today), tn:a.note},
-                {v:left, out:true, tt:a.n + (a.today ? ', not yet connected' : ''), tv:nf(left) + (a.today ? ' (Estimate)' : ''), tn:a.note}],
+                {v:left, c:'var(--ac2)', tt:a.n + (a.today ? ', not yet connected' : ''), tv:nf(left) + (a.today ? ' (Estimate)' : ''), tn:a.note}],
           val:E('b', null, a.val)};
-      }), 5619, {ref:271}));
+      };
+      var big = rows.filter(function(a){ return a.v > 1000; }), small = rows.filter(function(a){ return a.v <= 1000; });
+      if (big.length){ b.append(E('div', {class:'pnh'}, 'Mass networks. Scale 0 to 6,000')); b.append(hbars(big.map(mk), 6000)); }
+      if (small.length){ b.append(E('div', {class:'pnh'}, 'Chains and branches. Scale 0 to 300. Line: Aircash’s 271 points today')); b.append(hbars(small.map(mk), 300, {ref:271})); }
     },
     head:['Network', 'Units', 'Aircash today', 'Note'],
     rows:rows.map(function(a){ return [a.n, a.val, a.today, a.note]; }), numCols:[1, 2],
@@ -512,10 +517,10 @@ function page2(root){
     source:'report section 6.1 (SZTFH, VG, Telex, aldi.hu, Xpatloop, exclusive.hu)'
   });
   var cB = card({
-    title:'The model next door: Aircash in eastern Austria', sub:'Partner points in the strip bordering Hungary. Hungary today: 0 for all of them.',
+    title:'The model next door: Aircash in eastern Austria', sub:'Partner points in the strip bordering Hungary. Aircash has none of these partner types in Hungary today.',
     chart:function(b){
       b.append(hbars(AT.map(function(a){
-        return {label:a.n, sub:'Hungary today: 0', segs:[{v:a.v, c:'var(--ac)', tt:a.n + ', eastern Austria', tv:nf(a.v) + ' points', tn:a.note}], val:E('b', null, nf(a.v))};
+        return {label:a.n, segs:[{v:a.v, c:'var(--ac)', tt:a.n + ', eastern Austria', tv:nf(a.v) + ' points', tn:a.note}], val:E('b', null, nf(a.v))};
       }), 798));
     },
     head:['Partner type (eastern Austria)', 'Points', 'Services'], rows:AT.map(function(a){ return [a.n, a.v, a.note]; }), numCols:[1],
@@ -552,18 +557,18 @@ function page3(root){
   var tiles = kpis([
     {label:'Electronic share of payments', value:'46%', badge:{t:'▲ +4 pp', k:'up'}, foot:'2024: 42%; 2030 target 60-67%', bar:46},
     {label:'Electronic share below HUF 5,000', value:'40%', badge:{t:'60% cash', k:'neu'}, foot:'small payments stay in cash', bar:40},
-    {label:'Card purchases (quarter)', value:'588 M', badge:{t:'▲ +10.3%', k:'up'}, foot:'HUF 6.8 trillion, value +16.8%'},
-    {label:'Cash withdrawals (quarter)', value:'20.7 M', badge:{t:'▼ ' + MINUS + '6.6%', k:'down'}, foot:'HUF 3.4 trillion, value +7.2%'},
+    {label:'Card purchases (Q2 2026 release)', value:'588 M', badge:{t:'▲ +10.3%', k:'up'}, foot:'HUF 6.8 trillion, value +16.8%'},
+    {label:'Cash withdrawals (Q2 2026 release)', value:'20.7 M', badge:{t:'▼ ' + MINUS + '6.6%', k:'down'}, foot:'HUF 3.4 trillion, value +7.2%'},
     {label:'Payment accounts', value:'14 M', badge:{t:'13.2 M cards', k:'neu'}, foot:'MNB, Q2 2026'},
     {label:'ATMs', value:'~5,700', badge:{t:'HUF 300K free', k:'neu'}, foot:'monthly allowance since Feb 2026'}
   ]);
   var shRows = SH.filter(function(s){ return !st3.g.size || st3.g.has(s.g); });
   var cA = card({
-    title:'Where payments are already electronic', sub:'Electronic share of payments, 2025. The outlined remainder is mostly cash.',
+    title:'Where payments are already electronic', sub:'Electronic share of payments, 2025. The outlined remainder is not electronic.',
     chart:function(b){
-      b.append(legend([{c:'var(--ac)', l:'Electronic'}, {out:true, l:'Other, mostly cash'}]));
+      b.append(legend([{c:'var(--ac)', l:'Electronic'}, {out:true, l:'Not electronic'}]));
       b.append(hbars(shRows.map(function(s){
-        return {label:s.n, segs:[{v:s.v, c:'var(--ac)', tt:s.n, tv:s.v + '% electronic', tn:s.note}, {v:100 - s.v, out:true, tt:s.n + ', other', tv:(100 - s.v) + '%', tn:s.note}], val:E('b', null, s.v + '%')};
+        return {label:s.n, segs:[{v:s.v, c:'var(--ac)', tt:s.n, tv:s.v + '% electronic', tn:s.note}, {v:100 - s.v, out:true, tt:s.n + ', not electronic', tv:(100 - s.v) + '%', tn:s.note}], val:E('b', null, s.v + '%')};
       }), 100));
     },
     head:['Segment', 'Electronic share', 'Note'], rows:shRows.map(function(s){ return [s.n, s.v + '%', s.note]; }), numCols:[1],
@@ -584,7 +589,7 @@ function page3(root){
     source:'MNB Payment Systems Report 2026'
   });
   var cG = card({
-    title:'Card use grows, cash withdrawals shrink in number', sub:'Change in the quarter, Q2 2026. Cash withdrawals: fewer, but larger.',
+    title:'Card use grows, cash withdrawals shrink in number', sub:'Change as reported in the MNB Q2 2026 release; the report does not state the comparison period. Cash withdrawals: fewer, but larger.',
     chart:function(b){
       b.append(legend([{c:'var(--up)', l:'Growth'}, {c:'var(--down)', l:'Decline'}]));
       var w = E('div');
@@ -722,7 +727,7 @@ function page4(root){
   promo.addEventListener('change', function(){ st4.promo = promo.checked; paint(); });
 
   var cF = card({
-    title:'Gross fee per transaction', sub:'At the amount chosen in the filter panel.',
+    title:'Gross fee per transaction', sub:'At the amount chosen in the filter panel. The bar scale adjusts to that amount.',
     chart:function(b){ b.append(feeBody); },
     note:'Illustrative. Limits are in EUR in the schedule (e.g. withdrawal max EUR 500) and the wallet currency is not named, so they are not applied. Partner commission and card scheme costs, which are not public, still have to be deducted.',
     source:'aircash.eu/hu-HU/koltsegek, 20 Oct 2026; report section 6.6'
@@ -834,7 +839,7 @@ function page5(root){
   ]);
 
   var cG = card({
-    title:'Timeline', sub:'Months from the start of the plan. Light bars: preparation or negotiation. Dark bars: launch or live.',
+    title:'Timeline', sub:'Months from the start of the plan. Light bars: preparation or negotiation. Dark bars: launch or live. The report’s phase windows (6.3) and its month-by-month timeline (6.7) overlap; the bars follow the timeline.',
     chart:function(b){
       b.append(legend([{c:'var(--ac2)', l:'Preparation / negotiation'}, {c:'var(--ac)', l:'Launch / live'}]));
       var maxM = 24, ticks = [0, 3, 6, 12, 18, 24];
