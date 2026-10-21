@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aircash Hungary Dashboard</title>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f3f3f1; --surface:#ffffff; --ink:#1c1c1a; --ink2:#5a5a56; --muted:#8c8c87;
+  --grid:#e8e8e4; --base:#cfcfca; --border:#e0e0dc; --wash:#f1f1ee; --track:#e4e4e0;
+  --ac:#222220; --ac2:#9a9a95; --green:#1e7b4b; --up:#12803a; --down:#c93232; --onbadge:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --page:#111110; --surface:#1b1b1a; --ink:#efefeb; --ink2:#bdbdb7; --muted:#8c8c87;
+    --grid:#2c2c2a; --base:#3c3c39; --border:#2e2e2b; --wash:#242422; --track:#2c2c2a;
+    --ac:#ecece8; --ac2:#7d7d78; --green:#34b27a; --up:#2fbf5f; --down:#ef6a6a; --onbadge:#0b0b0b;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#111110; --surface:#1b1b1a; --ink:#efefeb; --ink2:#bdbdb7; --muted:#8c8c87;
+  --grid:#2c2c2a; --base:#3c3c39; --border:#2e2e2b; --wash:#242422; --track:#2c2c2a;
+  --ac:#ecece8; --ac2:#7d7d78; --green:#34b27a; --up:#2fbf5f; --down:#ef6a6a; --onbadge:#0b0b0b;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.wrap{max-width:1360px;margin:0 auto;padding:0 16px}
+
+/* top bar */
+.top{background:var(--surface);border-bottom:1px solid var(--border)}
+.bar{display:flex;align-items:center;gap:16px;padding:10px 0;flex-wrap:wrap}
+.logo{width:30px;height:30px;border-radius:6px;background:var(--green);color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center;flex:none}
+.ttl h1{font-size:15px;font-weight:650;line-height:1.2}
+.ttl p{font-size:11px;color:var(--muted)}
+nav[role=tablist]{display:flex;gap:2px;background:var(--wash);border:1px solid var(--border);border-radius:8px;padding:3px;overflow-x:auto;max-width:100%}
+.tab{border:1px solid transparent;background:transparent;border-radius:6px;padding:5px 14px;font-size:13px;color:var(--ink2);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected=true]{background:var(--surface);border-color:var(--border);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.right{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:11px;color:var(--muted)}
+.theme{border:1px solid var(--border);background:transparent;border-radius:6px;padding:4px 10px;font-size:12px;color:var(--ink2);white-space:nowrap}
+.theme:hover{background:var(--wash)}
+
+main{padding:18px 16px 28px}
+.panel[hidden]{display:none}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px;align-items:start}
+.layout.nosd{grid-template-columns:minmax(0,1fr)}
+.main2{display:grid;gap:12px;min-width:0}
+
+/* breadcrumb and insight */
+.crumbs{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:12px}
+.crumbs b{font-size:13px}
+.cs{color:var(--muted)}
+.cchip{border:1px solid var(--base);background:var(--surface);border-radius:4px;padding:1px 8px;font-size:12px;color:var(--ink2)}
+.cchip:hover{background:var(--wash)}
+.insight{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:9px 12px;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.est{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.03em;color:var(--ink2);border:1px solid var(--base);border-radius:999px;padding:0 6px;line-height:16px;vertical-align:middle;text-transform:uppercase;white-space:nowrap}
+
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 11px;min-width:0}
+.tl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);line-height:1.25;min-height:26px}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px}
+.tv2{font-size:26px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
+.badge{font-size:11px;font-weight:650;padding:1px 6px;border-radius:4px;color:var(--onbadge);white-space:nowrap}
+.badge.up{background:var(--up)} .badge.down{background:var(--down)}
+.badge.neu{background:var(--wash);color:var(--ink2);border:1px solid var(--border);font-weight:600}
+.tf{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mini{height:4px;background:var(--track);margin-top:7px;border-radius:2px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--ac)}
+
+/* cards */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,430px),1fr))}
+.g57{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+@media (max-width:1100px){.g57{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;min-width:0}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+h3{font-size:14px;font-weight:650}
+.csub{color:var(--ink2);font-size:12px;margin-top:1px}
+.segs{display:flex;border:1px solid var(--border);border-radius:5px;overflow:hidden;flex:none}
+.segb{border:0;background:transparent;padding:2px 9px;font-size:11px;color:var(--ink2)}
+.segb.on{background:var(--wash);color:var(--ink);font-weight:600}
+.cnote{color:var(--ink2);font-size:12px;margin-top:10px}
+.src{color:var(--muted);font-size:11px;margin-top:8px}
+.cbody{min-width:0}
+
+/* filter panel */
+.side{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;position:sticky;top:12px}
+.sh{font-weight:650;font-size:14px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.ssec{padding:8px 0;border-bottom:1px solid var(--grid)}
+.ssec:last-of-type{border-bottom:0}
+.sst{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+.ck{display:flex;align-items:center;gap:8px;padding:3px 2px;font-size:12.5px;cursor:pointer}
+.ck input{accent-color:var(--green);width:14px;height:14px;margin:0;flex:none}
+.ck span{flex:1;min-width:0}
+.ck em{font-style:normal;color:var(--muted);font-size:11px}
+.side input[type=range]{width:100%;accent-color:var(--green)}
+.amount{font-size:20px;font-weight:650;letter-spacing:-.02em}
+.linkbtn{border:0;background:transparent;color:var(--ink2);text-decoration:underline;font-size:12px;padding:6px 0 0}
+
+/* bars */
+.brow{display:grid;grid-template-columns:minmax(96px,190px) minmax(0,1fr) minmax(64px,auto);gap:10px;align-items:center;padding:4px 0}
+.brow.dim{opacity:.3}
+.blabel{font-size:12.5px;line-height:1.25}
+.blabel small{display:block;color:var(--muted);font-size:11px}
+.track{position:relative;height:22px;display:flex;gap:2px;align-items:stretch}
+.sb{min-width:3px}
+.sb.last{border-radius:0 3px 3px 0}
+.sb.out{box-shadow:inset 0 0 0 1px var(--ac)}
+.sb.ghost{background:transparent !important;pointer-events:none}
+.sb:hover:not(.ghost),.sb:focus-visible{filter:brightness(1.3)}
+.ref{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--ink2);pointer-events:none}
+.bval{font-size:12px;color:var(--ink2);text-align:right;white-space:nowrap}
+.bval b{color:var(--ink);font-weight:650}
+.dtrack{position:relative;height:22px;background:linear-gradient(var(--base),var(--base)) center/1px 100% no-repeat}
+.dbar{position:absolute;top:0;height:22px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px;font-size:12px;color:var(--ink2)}
+.lk{display:inline-flex;align-items:center;gap:6px}
+.lk i{display:inline-block;width:12px;height:12px;border-radius:2px}
+.lk i.out{box-shadow:inset 0 0 0 1px var(--ac)}
+
+/* tables */
+.tscroll{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:12.5px}
+.dt th,.dt td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--grid);vertical-align:top}
+.dt thead th{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;border-bottom:1px solid var(--base);white-space:nowrap}
+.dt tbody th{font-weight:600}
+.dt tr.dim{opacity:.3}
+.dt .num{text-align:right;font-variant-numeric:tabular-nums}
+.yes{color:var(--up);font-weight:600}
+.no{color:var(--muted)}
+.fit{font-weight:600;white-space:nowrap}
+
+/* tooltip */
+.tip{position:fixed;z-index:50;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--base);border-radius:6px;padding:7px 9px;box-shadow:0 4px 18px rgba(0,0,0,.18);max-width:290px;font-size:12px}
+.tip[hidden]{display:none}
+.tt{color:var(--ink2);display:flex;align-items:center;gap:6px}
+.key{display:inline-block;width:10px;height:3px;border-radius:2px}
+.tv{font-size:15px;font-weight:650;margin-top:1px}
+.tn{color:var(--muted);font-size:11px;margin-top:2px}
+
+/* gantt */
+.gantt{position:relative}
+.gaxis{position:relative;height:16px;margin-left:calc(min(230px,100%) + 12px)}
+.gaxis span{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+.ggrid{position:absolute;inset:0 0 0 calc(min(230px,100%) + 12px);pointer-events:none}
+.ggrid i{position:absolute;top:0;bottom:0;width:1px;background:var(--grid)}
+.gph{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 0 2px;position:relative}
+.grow{display:grid;grid-template-columns:minmax(120px,230px) minmax(0,1fr);gap:12px;align-items:center;padding:3px 0;position:relative}
+.gtrack{position:relative;height:18px}
+.gbar{position:absolute;top:0;height:18px;border-radius:3px}
+.nobar{font-size:11px;color:var(--muted)}
+details.ini{border-top:1px solid var(--grid);padding:7px 0}
+details.ini summary{cursor:pointer;display:flex;gap:10px;align-items:baseline;font-weight:600;list-style:none}
+details.ini summary::-webkit-details-marker{display:none}
+details.ini summary::before{content:"+";width:14px;color:var(--muted);flex:none}
+details.ini[open] summary::before{content:"-"}
+.ph{font-weight:400;font-size:11px;color:var(--ink2);border:1px solid var(--base);border-radius:999px;padding:0 8px}
+.idet{padding:6px 0 4px 24px;color:var(--ink2);font-size:12.5px}
+.idet p + p{margin-top:5px}
+.idet b{color:var(--ink)}
+svg text{font-family:inherit}
+ul.plain{margin:0;padding-left:18px;color:var(--ink2);font-size:12.5px}
+ul.plain li + li{margin-top:4px}
+.foot{color:var(--muted);font-size:11px;padding:0 16px 24px}
+.foot p + p{margin-top:5px}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .side{order:-1;position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));column-gap:16px}
+  .sh{grid-column:1 / -1}
+  .ssec{border-bottom:0}
+}
+@media (max-width:700px){
+  .right{margin-left:0;width:100%}
+  .brow{grid-template-columns:minmax(0,1fr) auto;row-gap:3px}
+  .brow .track,.brow .dtrack{grid-column:1 / -1;order:3}
+  .grow{grid-template-columns:1fr}
+  .gaxis{margin-left:0}
+  .ggrid{inset:0}
+}
+@media print{
+  .panel[hidden]{display:block}
+  .theme,.segs,nav,.side{display:none}
+  .layout{grid-template-columns:1fr}
+  .card,.tile{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo" aria-hidden="true">AH</div>
+      <div class="ttl"><h1>Aircash in Hungary</h1><p>Market position and business development. Independent analysis of public sources.</p></div>
+      <nav role="tablist" aria-label="Dashboard pages" id="tabs"></nav>
+      <div class="right"><span>Report: 20 Oct 2026</span><button class="theme" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: Auto</button></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap foot">
+  <p>Every figure comes from the report "Aircash in Hungary: market position and business development plan" (20 October 2026). Values marked <span class="est">Estimate</span> are the report's own calculations or assumptions. The MOL and Lapker contracts are based on information provided by Aircash.</p>
+  <p>Primary sources named in the report: aircash.eu/hu-HU (location finder, fees), MNB, KSH, NAV, SZTFH and press reports citing them. This is an independent analysis, not an official Aircash document.</p>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- tiny DOM helpers ---------- */
+function E(tag, props){
+  var n = document.createElement(tag);
+  if (props) for (var k in props){
+    var v = props[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'style') n.style.cssText = v;
+    else if (k.slice(0,2) === 'on') n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (var i = 2; i < arguments.length; i++) add(n, arguments[i]);
+  return n;
+}
+function add(n, c){
+  if (c == null || c === false) return;
+  if (Array.isArray(c)) { c.forEach(function(x){ add(n, x); }); return; }
+  n.append(c.nodeType ? c : document.createTextNode(String(c)));
+}
+var SVGNS = 'http://www.w3.org/2000/svg';
+function S(tag, props){
+  var n = document.createElementNS(SVGNS, tag);
+  if (props) for (var k in props){ if (props[k] != null) n.setAttribute(k, props[k]); }
+  for (var i = 2; i < arguments.length; i++) add(n, arguments[i]);
+  return n;
+}
+function nf(n){ return Number(n).toLocaleString('en-US'); }
+function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
+var MINUS = '−';
+
+/* ---------- tooltip (labels go in via textContent only) ---------- */
+var tip = E('div', {class:'tip', role:'tooltip', hidden:true});
+document.body.append(tip);
+function setTip(d){
+  tip.replaceChildren();
+  tip.append(E('div', {class:'tt'}, d.c ? E('span', {class:'key', style:'background:'+d.c}) : null, d.t));
+  tip.append(E('div', {class:'tv'}, d.v));
+  if (d.n) tip.append(E('div', {class:'tn'}, d.n));
+}
+function placeTip(x, y){
+  tip.hidden = false;
+  var w = tip.offsetWidth, h = tip.offsetHeight, l = x + 14, t = y - h - 12;
+  if (l + w > window.innerWidth - 8) l = x - w - 14;
+  if (l < 8) l = 8;
+  if (t < 8) t = y + 18;
+  tip.style.left = l + 'px'; tip.style.top = t + 'px';
+}
+function hideTip(){ tip.hidden = true; }
+function tipOf(el){ var d = el.dataset; return {t:d.tt, v:d.tv, n:d.tn, c:d.tc}; }
+document.addEventListener('pointermove', function(e){
+  var t = e.target.closest ? e.target.closest('[data-tt]') : null;
+  if (!t){ if (!(e.target.closest && e.target.closest('[data-keeptip]'))) hideTip(); return; }
+  setTip(tipOf(t)); placeTip(e.clientX, e.clientY);
+});
+document.addEventListener('focusin', function(e){
+  var t = e.target.closest ? e.target.closest('[data-tt]') : null;
+  if (!t) return;
+  var r = t.getBoundingClientRect(); setTip(tipOf(t)); placeTip(r.left + r.width / 2, r.top);
+});
+document.addEventListener('focusout', hideTip);
+window.addEventListener('blur', hideTip);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hideTip(); });
+
+/* ---------- shared components ---------- */
+function est(){ return E('span', {class:'est'}, 'Estimate'); }
+
+/* KPI tile: {label, value, badge:{t,k}, foot, est, bar} */
+function tile(o){
+  return E('div', {class:'tile'},
+    E('div', {class:'tl'}, o.label),
+    E('div', {class:'trow'}, E('div', {class:'tv2'}, o.value), o.badge ? E('span', {class:'badge ' + o.badge.k}, o.badge.t) : null),
+    o.foot || o.est ? E('div', {class:'tf'}, o.foot, o.est ? est() : null) : null,
+    o.bar != null ? E('div', {class:'mini', role:'img', 'aria-label':o.bar + ' percent'}, E('i', {style:'width:' + Math.min(100, o.bar) + '%'})) : null);
+}
+function kpis(list){ return E('div', {class:'kpis'}, list.map(tile)); }
+
+function table(head, rows, numCols){
+  numCols = numCols || [];
+  return E('div', {class:'tscroll'}, E('table', {class:'dt'},
+    E('thead', null, E('tr', null, head.map(function(h, i){ return E('th', {scope:'col', class: numCols.indexOf(i) > -1 ? 'num' : null}, h); }))),
+    E('tbody', null, rows.map(function(r){
+      return E('tr', {class: r.dim ? 'dim' : null}, (r.cells || r).map(function(c, i){
+        return i === 0 ? E('th', {scope:'row'}, c) : E('td', {class: numCols.indexOf(i) > -1 ? 'num' : null}, c);
+      }));
+    }))));
+}
+function card(o){
+  var mode = 'chart';
+  var body = E('div', {class:'cbody'});
+  var bC = E('button', {type:'button', class:'segb on', 'aria-pressed':'true'}, 'Chart');
+  var bT = E('button', {type:'button', class:'segb', 'aria-pressed':'false'}, 'Table');
+  function draw(){
+    body.replaceChildren();
+    if (mode === 'chart') o.chart(body); else body.append(table(o.head, o.rows, o.numCols));
+    bC.classList.toggle('on', mode === 'chart'); bT.classList.toggle('on', mode === 'table');
+    bC.setAttribute('aria-pressed', String(mode === 'chart')); bT.setAttribute('aria-pressed', String(mode === 'table'));
+  }
+  bC.addEventListener('click', function(){ mode = 'chart'; draw(); });
+  bT.addEventListener('click', function(){ mode = 'table'; draw(); });
+  var root = E('article', {class:'card'},
+    E('header', {class:'chead'},
+      E('div', null, E('h3', null, o.title), o.sub ? E('p', {class:'csub'}, o.sub) : null),
+      o.head ? E('div', {class:'segs', role:'group', 'aria-label':'View as chart or table'}, bC, bT) : null),
+    body,
+    o.note ? E('p', {class:'cnote'}, o.note) : null,
+    o.source ? E('p', {class:'src'}, 'Source: ' + o.source) : null);
+  root._draw = draw;
+  return root;
+}
+function drawAll(root){ root.querySelectorAll('.card').forEach(function(c){ if (c._draw) c._draw(); }); }
+function legend(items){
+  return E('div', {class:'legend'}, items.map(function(it){ return E('span', {class:'lk'}, E('i', {class: it.out ? 'out' : null, style: it.out ? null : 'background:' + it.c}), it.l); }));
+}
+/* hbars rows: {label, sub, segs:[{v,c,out,ghost,tt,tv,tn}], val, dim} */
+function hbars(rows, max, opts){
+  opts = opts || {};
+  var wrap = E('div');
+  rows.forEach(function(r){
+    var track = E('div', {class:'track'});
+    if (opts.ref != null) track.append(E('div', {class:'ref', style:'left:' + (opts.ref / max * 100) + '%'}));
+    var segs = r.segs.filter(function(s){ return s.v > 0; });
+    segs.forEach(function(s, i){
+      var cls = 'sb' + (i === segs.length - 1 ? ' last' : '') + (s.out ? ' out' : '') + (s.ghost ? ' ghost' : '');
+      track.append(E('div', {class:cls, tabindex: s.ghost ? null : '0', style:'width:' + (s.v / max * 100) + '%;' + (s.out || s.ghost ? '' : 'background:' + s.c),
+        'data-tt': s.ghost ? null : (s.tt || r.label), 'data-tv': s.tv, 'data-tn': s.tn, 'data-tc': s.c || 'var(--ac)',
+        role: s.ghost ? null : 'img', 'aria-label': s.ghost ? null : (s.tt || r.label) + ': ' + s.tv}));
+    });
+    wrap.append(E('div', {class:'brow' + (r.dim ? ' dim' : '')},
+      E('div', {class:'blabel'}, r.label, r.sub ? E('small', null, r.sub) : null), track, E('div', {class:'bval'}, r.val)));
+  });
+  return wrap;
+}
+/* filter panel */
+function checks(group, items, set){
+  return items.map(function(it){
+    var cb = E('input', {type:'checkbox', 'data-fid':group + '-' + it.id});
+    cb.checked = set.has(it.id);
+    cb.addEventListener('change', function(){ if (cb.checked) set.add(it.id); else set.delete(it.id); redo(); });
+    return E('label', {class:'ck'}, cb, E('span', null, it.label), it.n != null ? E('em', null, it.n) : null);
+  });
+}
+function side(sections, onReset){
+  return E('aside', {class:'side', 'aria-label':'Filters'},
+    E('div', {class:'sh'}, 'Filter'),
+    sections.map(function(s){ return E('div', {class:'ssec'}, E('div', {class:'sst'}, s.t), s.nodes); }),
+    onReset ? E('button', {type:'button', class:'linkbtn', onclick:onReset}, 'Reset filters') : null);
+}
+function chipsFor(items, set){
+  var out = [];
+  items.forEach(function(it){ if (set.has(it.id)) out.push({l:it.label, rm:function(){ set.delete(it.id); redo(); }}); });
+  return out;
+}
+function frame(o){
+  var chips = o.chips || [];
+  var crumbs = E('div', {class:'crumbs'}, E('b', null, o.title), E('span', {class:'cs'}, o.sub),
+    chips.map(function(c){ return E('button', {type:'button', class:'cchip', 'aria-label':'Remove filter ' + c.l, onclick:c.rm}, c.l + ' ×'); }),
+    chips.length ? E('span', {class:'cs'}, 'all other filters') : E('span', {class:'cs'}, 'no filters applied'));
+  var ins = E('p', {class:'insight'}, o.insight, o.est ? est() : null);
+  return E('div', {class:'layout' + (o.side ? '' : ' nosd')}, E('div', {class:'main2'}, crumbs, ins, o.kpis, o.content), o.side);
+}
+
+/* ---------- data (all values from the report) ---------- */
+var SV = [{id:'dep', label:'Cash deposit'}, {id:'wd', label:'Cash withdrawal'}, {id:'abon', label:'Abon'}, {id:'card', label:'Aircash Mastercard'}];
+var PARTNERS = [
+  {id:'ec',  name:'Exclusive Change', pts:109, bud:36, svc:{dep:1, wd:1, abon:1, card:1}, upd:'3-10 Sep 2026'},
+  {id:'omv', name:'OMV',              pts:162, bud:54, svc:{dep:1, wd:0, abon:1, card:1}, upd:'18 Jun 2026'},
+  {id:'mol', name:'MOL',              pts:0, bud:0, contract:true, upd:'-'},
+  {id:'lap', name:'Lapker (Inmedio, Relay)', pts:0, bud:0, contract:true, upd:'-'}
+];
+var TOTAL = 271;
+
+/* ---------- PAGE 1: network ---------- */
+var AREAS = [{id:'bud', label:'Budapest'}, {id:'rest', label:'Rest of Hungary'}];
+var st1 = {p:new Set(), s:new Set(), a:new Set()};
+function eff(p){
+  var ok = !(st1.p.size && !st1.p.has(p.id));
+  st1.s.forEach(function(s){ if (!p.svc || !p.svc[s]) ok = false; });
+  var useB = !st1.a.size || st1.a.has('bud'), useR = !st1.a.size || st1.a.has('rest');
+  var bud = ok && useB ? p.bud : 0, rest = ok && useR ? p.pts - p.bud : 0;
+  return {p:p, ok:ok, bud:bud, rest:rest, pts:bud + rest};
+}
+function page1(root){
+  var R = PARTNERS.map(eff);
+  var N = R.reduce(function(a, r){ return a + r.pts; }, 0);
+  var B = R.reduce(function(a, r){ return a + r.bud; }, 0);
+  var WD = R.reduce(function(a, r){ return a + (r.p.svc && r.p.svc.wd ? r.pts : 0); }, 0);
+  var EC = R[0].pts, OMV = R[1].pts;
+
+  var tiles = kpis([
+    {label:'Points matching the filters', value:nf(N), badge:{t:pct(N, TOTAL) + '% of ' + TOTAL, k:'neu'}, foot:'physical points on the Hungarian map', bar:pct(N, TOTAL)},
+    {label:'Withdrawal-enabled points', value:nf(WD), badge:{t: N ? pct(WD, N) + '% of matching' : '-', k:'neu'}, foot:'shown only at Exclusive Change', bar:pct(WD, TOTAL)},
+    {label:'Exclusive Change points', value:nf(EC), badge:{t:'~' + pct(EC, 300) + '%', k:'neu'}, foot:'of nearly 300 branches', est:true, bar:pct(EC, 300)},
+    {label:'OMV points', value:nf(OMV), badge:{t:'no withdrawal', k:'neu'}, foot:'data from 18 Jun 2026', bar:pct(OMV, TOTAL)},
+    {label:'Of which in Budapest', value:nf(B), badge:{t: N ? pct(B, N) + '%' : '-', k:'neu'}, foot:'all points: 90 of 271 = 33%', est:true, bar: N ? pct(B, N) : 0},
+    {label:'Signed, not on the map', value:'2', badge:{t:'▼ 0 points', k:'down'}, foot:'MOL, Lapker (Aircash information)'}
+  ]);
+
+  var cA = card({
+    title:'Points by partner', sub:'Budapest vs the rest of Hungary. Fixed scale: filtering shrinks the bars.',
+    chart:function(b){
+      b.append(legend([{c:'var(--ac)', l:'Budapest'}, {c:'var(--ac2)', l:'Rest of Hungary'}]));
+      b.append(hbars(R.map(function(r){
+        var p = r.p;
+        return {label:p.name, sub: p.contract ? 'contract in place, 0 points on the map' : 'data updated ' + p.upd, dim: !r.ok && !p.contract,
+          segs:[{v:r.bud, c:'var(--ac)', tt:p.name + ', Budapest', tv:r.bud + ' points'},
+                {v:r.rest, c:'var(--ac2)', tt:p.name + ', rest of Hungary', tv:r.rest + ' points'}],
+          val:E('b', null, nf(r.pts))};
+      }), 162));
+    },
+    head:['Partner', 'Budapest', 'Rest of Hungary', 'Total'],
+    rows:R.map(function(r){ return {cells:[r.p.name, r.bud, r.rest, r.pts], dim: !r.ok && !r.p.contract}; }), numCols:[1, 2, 3],
+    source:'aircash.eu/hu-HU/helyszinek, queried 20 Oct 2026; Budapest: 36 Exclusive Change + 54 OMV'
+  });
+  var yes = function(v){ return v ? E('span', {class:'yes'}, '✓ Yes') : E('span', {class:'no'}, '- Not marked'); };
+  var cB = card({
+    title:'Which services work where', sub:'Greyed rows do not match the filters.',
+    chart:function(b){
+      b.append(table(['Partner', 'Points', 'Deposit', 'Withdrawal', 'Abon', 'Mastercard', 'Updated'],
+        R.map(function(r){
+          var p = r.p;
+          if (p.contract) return {dim: st1.s.size > 0 || (st1.p.size > 0 && !st1.p.has(p.id)), cells:[p.name, 0, '-', '-', '-', '-', 'contract, not on map']};
+          return {dim: !r.ok, cells:[p.name, p.pts, yes(p.svc.dep), yes(p.svc.wd), yes(p.svc.abon), yes(p.svc.card), p.upd]};
+        }), [1]));
+    },
+    note:'OMV data is from June 2026, so withdrawal may have changed since.',
+    source:'aircash.eu/hu-HU/helyszinek, 20 Oct 2026'
+  });
+  var KF = [
+    [1, 'Electronic payments are 46% of all payments (2024: 42%); the MNB target for 2030 is 60-67% (MNB Payment Systems Report 2026)', 'Cash is still the majority of payments, but its share falls every year.'],
+    [2, 'Below HUF 5,000 the electronic share is 40%, so 60% of small payments are still made in cash (MNB, 2025)', 'Small-value cash shoppers are Aircash’s natural target group.'],
+    [3, '2.8 million Hungarian customers hold an account with a foreign fintech, mostly as a secondary account (MNB, 2025)', 'The secondary digital account market is large but occupied.'],
+    [4, 'Revolut has over 2 million Hungarian customers and a Hungarian branch, and joined the Hungarian Banking Association on 14 Oct 2026', 'The main digital competitor operates like a bank.'],
+    [5, 'Aircash in Hungary: 109 Exclusive Change and 162 OMV points; MOL and Lapker contracts not displayed on the map (20 Oct 2026)', 'Cash entry points exist; withdrawal is shown only at Exclusive Change branches.']
+  ];
+  var cC = card({title:'Key findings', sub:'The five findings of the report and its conclusions.', chart:function(b){ b.append(table(['#', 'Fact (source, period)', 'Conclusion'], KF)); }, source:'report section 1'});
+
+  function reset(){ st1.p.clear(); st1.s.clear(); st1.a.clear(); redo(); }
+  var sd = side([
+    {t:'Partner', nodes:checks('p', PARTNERS.map(function(p){ return {id:p.id, label:p.name, n:p.pts}; }), st1.p)},
+    {t:'Service', nodes:checks('s', SV, st1.s)},
+    {t:'Area', nodes:checks('a', AREAS, st1.a)}
+  ], reset);
+
+  root.replaceChildren(frame({
+    title:'Network', sub:'Hungary, location finder queried 20 Oct 2026',
+    chips: chipsFor(PARTNERS.map(function(p){ return {id:p.id, label:p.name}; }), st1.p).concat(chipsFor(SV, st1.s), chipsFor(AREAS, st1.a)),
+    insight:'Aircash is at 271 physical points in Hungary. Cash withdrawal is shown at only 109 of them, and the MOL and Lapker contracts do not appear on the map.',
+    kpis:tiles, content:[E('div', {class:'grid g57'}, cA, cB), cC], side:sd
+  }));
+  drawAll(root);
+}
+
+/* ---------- PAGE 2: potential ---------- */
+var NET = [
+  {id:'tob', n:'National tobacco shops', v:5619, today:0, val:'5,619', note:'4,977 concession + 642 designated shops, 15 Dec 2025 (SZTFH). Not a chain: run by concession holders.'},
+  {id:'coop', n:'Coop', v:2100, today:0, val:'~2,100', note:'Close to 2,100 stores in about 1,400 settlements; the only grocery store in 879 settlements (VG, 21 May 2026).'},
+  {id:'ec', n:'Exclusive Change', v:300, today:109, val:'~300', note:'Nearly 300 branches by its own account (exclusive.hu); Aircash is in 109.'},
+  {id:'lidl', n:'Lidl', v:210, today:0, val:'210', note:'210 stores, November 2024 (Telex).'},
+  {id:'aldi', n:'Aldi', v:180, today:0, val:'180+', note:'More than 180 stores (aldi.hu).'},
+  {id:'auch', n:'Auchan', v:24, today:0, val:'24', note:'24 stores and 19 filling stations (Xpatloop, 20 Feb 2026).'}
+];
+var st2 = {n:new Set()};
+var AT = [
+  {n:'Tobacco shops (Trafik)', v:798, note:'Deposit, Abon, partly card.'},
+  {n:'BILLA', v:477, note:'Abon.'}, {n:'SPAR', v:326, note:'Abon.'}, {n:'PENNY', v:152, note:'Abon.'}
+];
+function page2(root){
+  var tiles = kpis([
+    {label:'Tobacco shops vs today’s network', value:'~21×', badge:{t:'5,619 shops', k:'neu'}, foot:'5,619 / 271', est:true},
+    {label:'Coop stores', value:'~2,100', badge:{t:'879 villages', k:'neu'}, foot:'only grocery store in 879 settlements'},
+    {label:'Exclusive Change coverage', value:'~36%', badge:{t:'109 of ~300', k:'neu'}, foot:'about 190 branches missing', est:true, bar:36},
+    {label:'Withdrawal points if OMV is enabled', value:'271', badge:{t:'from 109', k:'up'}, foot:'109 + 162', est:true},
+    {label:'Eastern Austria: tobacco shops', value:'798', badge:{t:'Hungary: 0', k:'down'}, foot:'strip bordering Hungary only'},
+    {label:'Budapest share of the network', value:'33%', badge:{t:'90 of 271', k:'neu'}, foot:'36 Exclusive Change + 54 OMV', est:true, bar:33}
+  ]);
+  var rows = NET.filter(function(a){ return !st2.n.size || st2.n.has(a.id); });
+  var cA = card({
+    title:'Potential partner networks vs Aircash today', sub:'Units per network. The vertical line marks Aircash’s 271 points.',
+    chart:function(b){
+      b.append(legend([{c:'var(--ac)', l:'Already an Aircash point'}, {out:true, l:'Not yet connected'}]));
+      b.append(hbars(rows.map(function(a){
+        var left = a.v - a.today;
+        return {label:a.n, sub:'Aircash today: ' + a.today,
+          segs:[{v:a.today, c:'var(--ac)', tt:a.n + ', Aircash points', tv:nf(a.today), tn:a.note},
+                {v:left, out:true, tt:a.n + (a.today ? ', not yet connected' : ''), tv:nf(left) + (a.today ? ' (Estimate)' : ''), tn:a.note}],
+          val:E('b', null, a.val)};
+      }), 5619, {ref:271}));
+    },
+    head:['Network', 'Units', 'Aircash today', 'Note'],
+    rows:rows.map(function(a){ return [a.n, a.val, a.today, a.note]; }), numCols:[1, 2],
+    note:'Not shown because the report could not verify their size: OMV, MOL and Lapker (Inmedio, Relay). Aircash has 162 OMV points; MOL and Lapker show 0 points on the map.',
+    source:'report section 6.1 (SZTFH, VG, Telex, aldi.hu, Xpatloop, exclusive.hu)'
+  });
+  var cB = card({
+    title:'The model next door: Aircash in eastern Austria', sub:'Partner points in the strip bordering Hungary. Hungary today: 0 for all of them.',
+    chart:function(b){
+      b.append(hbars(AT.map(function(a){
+        return {label:a.n, sub:'Hungary today: 0', segs:[{v:a.v, c:'var(--ac)', tt:a.n + ', eastern Austria', tv:nf(a.v) + ' points', tn:a.note}], val:E('b', null, nf(a.v))};
+      }), 798));
+    },
+    head:['Partner type (eastern Austria)', 'Points', 'Services'], rows:AT.map(function(a){ return [a.n, a.v, a.note]; }), numCols:[1],
+    note:'The report also lists Tipsport and Shell in Slovakia and Lidl in Slovenia and Croatia as partners. SPAR, Lidl and Shell also operate in Hungary. Counts in different countries are not like-for-like.',
+    source:'aircash.eu location finder as summarised in report section 6.1'
+  });
+  var sd = side([{t:'Network (filters the left chart)', nodes:checks('n', NET.map(function(a){ return {id:a.id, label:a.n}; }), st2.n)}],
+    function(){ st2.n.clear(); redo(); });
+  root.replaceChildren(frame({
+    title:'Potential', sub:'signed contracts and partner networks',
+    chips:chipsFor(NET.map(function(a){ return {id:a.id, label:a.n}; }), st2.n),
+    insight:'Tobacco shops alone are about 21 times today’s network. Coop is the other step change. The discount chains (Lidl 210, Aldi 180+, Auchan 24) are in the same range as today’s network or smaller.', est:true,
+    kpis:tiles, content:[E('div', {class:'grid g2'}, cA, cB)], side:sd
+  }));
+  drawAll(root);
+}
+
+/* ---------- PAGE 3: market ---------- */
+var SEGS3 = [{id:'all', label:'All payments'}, {id:'amt', label:'By payment size'}, {id:'bud', label:'Budapest'}];
+var st3 = {g:new Set()};
+var SH = [
+  {g:'all', n:'All payments, by count', v:46, note:'2024: 42%.'},
+  {g:'all', n:'All payments, by value', v:51, note:'2025.'},
+  {g:'amt', n:'Below HUF 5,000', v:40, note:'So 60% of small payments are in cash.'},
+  {g:'amt', n:'HUF 20,000-50,000', v:69, note:'2025.'},
+  {g:'bud', n:'Budapest, by count', v:62, note:'2025.'},
+  {g:'bud', n:'Budapest, by value', v:70, note:'2025.'}
+];
+var GR = [
+  {n:'Card purchases, count', v:10.3}, {n:'Card purchases, value', v:16.8},
+  {n:'Cash withdrawals, count', v:-6.6}, {n:'Cash withdrawals, value', v:7.2}
+];
+function page3(root){
+  var tiles = kpis([
+    {label:'Electronic share of payments', value:'46%', badge:{t:'▲ +4 pp', k:'up'}, foot:'2024: 42%; 2030 target 60-67%', bar:46},
+    {label:'Electronic share below HUF 5,000', value:'40%', badge:{t:'60% cash', k:'neu'}, foot:'small payments stay in cash', bar:40},
+    {label:'Card purchases (quarter)', value:'588 M', badge:{t:'▲ +10.3%', k:'up'}, foot:'HUF 6.8 trillion, value +16.8%'},
+    {label:'Cash withdrawals (quarter)', value:'20.7 M', badge:{t:'▼ ' + MINUS + '6.6%', k:'down'}, foot:'HUF 3.4 trillion, value +7.2%'},
+    {label:'Payment accounts', value:'14 M', badge:{t:'13.2 M cards', k:'neu'}, foot:'MNB, Q2 2026'},
+    {label:'ATMs', value:'~5,700', badge:{t:'HUF 300K free', k:'neu'}, foot:'monthly allowance since Feb 2026'}
+  ]);
+  var shRows = SH.filter(function(s){ return !st3.g.size || st3.g.has(s.g); });
+  var cA = card({
+    title:'Where payments are already electronic', sub:'Electronic share of payments, 2025. The outlined remainder is mostly cash.',
+    chart:function(b){
+      b.append(legend([{c:'var(--ac)', l:'Electronic'}, {out:true, l:'Other, mostly cash'}]));
+      b.append(hbars(shRows.map(function(s){
+        return {label:s.n, segs:[{v:s.v, c:'var(--ac)', tt:s.n, tv:s.v + '% electronic', tn:s.note}, {v:100 - s.v, out:true, tt:s.n + ', other', tv:(100 - s.v) + '%', tn:s.note}], val:E('b', null, s.v + '%')};
+      }), 100));
+    },
+    head:['Segment', 'Electronic share', 'Note'], rows:shRows.map(function(s){ return [s.n, s.v + '%', s.note]; }), numCols:[1],
+    source:'MNB Payment Systems Report 2026, press conference 21 Sep 2026 (ProfitLine)'
+  });
+  var cT = card({
+    title:'Electronic share: last year, this year, target', sub:'Share of all payments by count.',
+    chart:function(b){
+      b.append(legend([{out:true, l:'Previous year'}, {c:'var(--ac)', l:'Actual'}, {c:'var(--ac2)', l:'MNB target range'}]));
+      b.append(hbars([
+        {label:'2024', segs:[{v:42, out:true, tt:'2024', tv:'42%'}], val:E('b', null, '42%')},
+        {label:'2025', segs:[{v:46, c:'var(--ac)', tt:'2025', tv:'46%', tn:'+4 percentage points vs 2024'}], val:E('b', null, '46%')},
+        {label:'2030 target', segs:[{v:60, ghost:true}, {v:7, c:'var(--ac2)', tt:'2030 MNB target', tv:'60-67%'}], val:E('b', null, '60-67%')}
+      ], 100));
+    },
+    head:['Year', 'Electronic share'], rows:[['2024', '42%'], ['2025', '46%'], ['2030 target', '60-67%']], numCols:[1],
+    note:'To reach the target range the share must rise another 14 to 21 points in five years (calculated from 46%).',
+    source:'MNB Payment Systems Report 2026'
+  });
+  var cG = card({
+    title:'Card use grows, cash withdrawals shrink in number', sub:'Change in the quarter, Q2 2026. Cash withdrawals: fewer, but larger.',
+    chart:function(b){
+      b.append(legend([{c:'var(--up)', l:'Growth'}, {c:'var(--down)', l:'Decline'}]));
+      var w = E('div');
+      GR.forEach(function(g){
+        var half = Math.abs(g.v) / 20 * 50, up = g.v >= 0, col = up ? 'var(--up)' : 'var(--down)';
+        var bar = E('div', {class:'dbar', tabindex:'0',
+          style:'width:' + half + '%;background:' + col + ';' + (up ? 'left:50%;border-radius:0 3px 3px 0' : 'right:50%;border-radius:3px 0 0 3px'),
+          'data-tt':g.n, 'data-tv':(up ? '+' : MINUS) + Math.abs(g.v) + '%', 'data-tc':col, role:'img', 'aria-label':g.n + ' ' + g.v + '%'});
+        w.append(E('div', {class:'brow'}, E('div', {class:'blabel'}, g.n), E('div', {class:'dtrack'}, bar),
+          E('div', {class:'bval'}, E('b', null, (up ? '▲ +' : '▼ ' + MINUS) + Math.abs(g.v) + '%'))));
+      });
+      b.append(w);
+    },
+    head:['Measure', 'Change'], rows:GR.map(function(g){ return [g.n, (g.v > 0 ? '+' : '') + g.v + '%']; }), numCols:[1],
+    source:'MNB payments statistics release, Q2 2026 (15 Sep 2026)'
+  });
+  var cM = card({
+    title:'What this means for Aircash',
+    chart:function(b){ b.append(E('ul', {class:'plain'},
+      E('li', null, 'The number of cash withdrawals is falling while the average amount rises.'),
+      E('li', null, 'Free ATM allowance: bank customers get HUF 300,000 a month for free, what Aircash charges 4% for at partners. Retail cash withdrawal mainly appeals to people without a Hungarian bank account or card (foreign workers, tourists) or without an ATM nearby.'),
+      E('li', null, 'Financial transaction tax (NAV, 4 Feb 2026): transfers 0.45% (max HUF 20,000; for individuals only on the part above HUF 50,000), cash withdrawal 0.9%.'),
+      E('li', null, 'qvik (bank instant payments): 4.6 million payments and HUF 1,144 billion in the quarter, over 30,000 accepting merchants.'),
+      E('li', null, '56% of the population would pay cashless everywhere; 3.2 million cards are in mobile wallets (31% of card purchases).'),
+      E('li', null, '2.8 million Hungarians hold an account with a foreign fintech (Revolut alone: over 2 million).'))); },
+    source:'report sections 1 and 2 (MNB, NAV, money.hu, Pénzcentrum)'
+  });
+  var sd = side([{t:'Payment segment (filters the first chart)', nodes:checks('g', SEGS3, st3.g)}], function(){ st3.g.clear(); redo(); });
+  root.replaceChildren(frame({
+    title:'Market', sub:'MNB data, 2025 and Q2 2026',
+    chips:chipsFor(SEGS3, st3.g),
+    insight:'Cash is still the majority of payments, but the electronic share rose from 42% to 46% in a year. The cash that remains sits in small payments: below HUF 5,000 only 40% is electronic.',
+    kpis:tiles, content:[E('div', {class:'grid g2'}, cA, cT), E('div', {class:'grid g2'}, cG, cM)], side:sd
+  }));
+  drawAll(root);
+}
+
+/* ---------- PAGE 4: fees and rivals ---------- */
+var st4 = {amt:20000, promo:false};
+function fees(a, promo){
+  return [
+    {n:'Cash deposit at partner', rule:'HUF 0', fee:0},
+    {n:'P2P money transfer', rule:'1%', fee:a * 0.01},
+    {n:'Payout to bank account (IBAN)', rule: promo ? '1% (promotional, until 31 Dec 2026)' : '2%', fee:a * (promo ? 0.01 : 0.02)},
+    {n:'Cash withdrawal at partner', rule:'4%', fee:a * 0.04},
+    {n:'ATM withdrawal in the EU', rule:'HUF 595 + 2%', fee:595 + a * 0.02}
+  ];
+}
+var CM = [
+  ['Operating basis in Hungary', 'Croatian e-money institution, cross-border services', 'Lithuanian bank with Hungarian branch', 'MNB-supervised credit institutions'],
+  ['Cash top-up', 'At 271 points (Exclusive Change, OMV)', 'No verified data', 'Bank branches'],
+  ['Cash withdrawal', '109 Exclusive Change branches (4%) and ATMs (HUF 595 + 2%)', 'ATMs with card', 'Nearly 5,700 ATMs, free up to HUF 300,000 a month'],
+  ['Hungarian customers', 'No public data', 'Over 2 million', '14 million payment accounts'],
+  ['Hungarian-language app', 'No', 'No verified data', 'Yes'],
+  ['Voucher for cash (Abon)', 'Yes, at 271 points', 'No', 'No']
+];
+var FS = [
+  ['Cash deposit at partner', 'HUF 0', 'max. HUF 200,000 per transaction'],
+  ['Top-up by bank card', 'EUR 0', 'max. EUR 700'],
+  ['Top-up by Apple Pay / Google Pay', 'EUR 0', 'max. EUR 1,000'],
+  ['Top-up by bank transfer', 'EUR 0', 'up to two business days'],
+  ['Cash withdrawal at partner', '4%', 'max. EUR 500'],
+  ['Payout to bank account (IBAN)', '2% (promotional 1% until 31 Dec 2026)', 'max. EUR 550; one business day'],
+  ['P2P money transfer', '1%', 'max. EUR 1,000'],
+  ['Aircash Mastercard', 'recommended price EUR 5', 'activation and monthly fee EUR 0'],
+  ['Payments with the Mastercard', 'EUR 0; 3% at gambling merchants', 'betting shops, gambling, casino, lottery'],
+  ['ATM withdrawal in the EU', 'HUF 595 + 2%', ''],
+  ['Virtual card', 'EUR 0', 'max. 5 cards']
+];
+function page4(root){
+  var kpiBox = E('div'), feeBody = E('div'), lineHost = E('div'), amtOut = E('div', {class:'amount'});
+  var slider = E('input', {type:'range', min:'5000', max:'200000', step:'1000', value:String(st4.amt), 'aria-label':'Transaction amount in HUF'});
+  var promo = E('input', {type:'checkbox', 'data-fid':'promo'});
+  promo.checked = st4.promo;
+
+  function paint(){
+    amtOut.textContent = 'HUF ' + nf(st4.amt);
+    var f = fees(st4.amt, st4.promo);
+    var byName = {}; f.forEach(function(x){ byName[x.n] = x; });
+    var h = function(x){ return 'HUF ' + nf(Math.round(x.fee)); };
+    var wd = byName['Cash withdrawal at partner'], atm = byName['ATM withdrawal in the EU'], p2p = byName['P2P money transfer'], iban = byName['Payout to bank account (IBAN)'];
+    kpiBox.replaceChildren(kpis([
+      {label:'Partner withdrawal (4%)', value:h(wd), badge:{t:(wd.fee / st4.amt * 100).toFixed(1) + '%', k:'neu'}, foot:'gross fee at HUF ' + nf(st4.amt)},
+      {label:'ATM withdrawal in the EU', value:h(atm), badge:{t:(atm.fee / st4.amt * 100).toFixed(1) + '%', k:'neu'}, foot:'HUF 595 + 2%'},
+      {label:'P2P transfer (1%)', value:h(p2p), badge:{t:'1.0%', k:'neu'}, foot:'gross fee'},
+      {label:'Payout to bank (IBAN)', value:h(iban), badge:{t: st4.promo ? '1.0%' : '2.0%', k:'neu'}, foot: st4.promo ? 'promotional rate' : 'standard rate'},
+      {label:'Cash deposit at partner', value:'HUF 0', badge:{t:'free', k:'up'}, foot:'max. HUF 200,000 per transaction'},
+      {label:'Break-even amount (HUF), partner vs ATM', value:'29,750', badge:{t:'calculated', k:'neu'}, foot:'595 / (4% ' + MINUS + ' 2%)', est:true}
+    ]));
+    var max = Math.max.apply(null, f.map(function(x){ return x.fee; })) || 1;
+    feeBody.replaceChildren(hbars(f.map(function(x){
+      return {label:x.n, sub:x.rule, segs:[{v:x.fee, c:'var(--ac)', tt:x.n, tv:h(x), tn:'Effective rate ' + (x.fee / st4.amt * 100).toFixed(1) + '% of the amount'}], val:E('b', null, h(x))};
+    }), max));
+    drawLine();
+  }
+  var rate = function(a){ return (595 + a * .02) / a * 100; };
+  function drawLine(){
+    lineHost.replaceChildren();
+    var W = Math.max(280, lineHost.clientWidth || 520), H = 270;
+    var m = {l:38, r:92, t:12, b:28}, X0 = 5000, X1 = 200000, Y1 = 14;
+    var x = function(a){ return m.l + (a - X0) / (X1 - X0) * (W - m.l - m.r); };
+    var y = function(r){ return H - m.b - r / Y1 * (H - m.t - m.b); };
+    var svg = S('svg', {viewBox:'0 0 ' + W + ' ' + H, width:W, height:H, role:'img', 'aria-label':'Effective fee rate by amount for partner withdrawal and ATM withdrawal'});
+    for (var r = 0; r <= Y1; r += 2){
+      svg.append(S('line', {x1:m.l, x2:W - m.r, y1:y(r), y2:y(r), stroke: r === 0 ? 'var(--base)' : 'var(--grid)', 'stroke-width':1}));
+      svg.append(S('text', {x:m.l - 6, y:y(r) + 4, 'text-anchor':'end', 'font-size':11, fill:'var(--muted)'}, r + '%'));
+    }
+    [10000, 50000, 100000, 150000, 200000].forEach(function(a){
+      svg.append(S('text', {x:x(a), y:H - 8, 'text-anchor':'middle', 'font-size':11, fill:'var(--muted)'}, a / 1000 + 'K'));
+    });
+    var pts = []; for (var a = X0; a <= X1; a += 1000) pts.push(x(a).toFixed(1) + ',' + y(rate(a)).toFixed(1));
+    svg.append(S('line', {x1:x(X0), x2:x(X1), y1:y(4), y2:y(4), stroke:'var(--ac2)', 'stroke-width':2, 'stroke-linecap':'round'}));
+    svg.append(S('polyline', {points:pts.join(' '), fill:'none', stroke:'var(--ac)', 'stroke-width':2, 'stroke-linejoin':'round', 'stroke-linecap':'round'}));
+    svg.append(S('text', {x:x(X1) + 8, y:y(4) + 4, 'font-size':11, fill:'var(--ink2)'}, 'Partner 4.0%'));
+    svg.append(S('text', {x:x(X1) + 8, y:y(rate(X1)) + 4, 'font-size':11, fill:'var(--ink2)'}, 'ATM ' + rate(X1).toFixed(1) + '%'));
+    svg.append(S('circle', {cx:x(29750), cy:y(4), r:4, fill:'var(--green)', stroke:'var(--surface)', 'stroke-width':2}));
+    svg.append(S('text', {x:x(29750) + 8, y:y(4) - 9, 'font-size':11, fill:'var(--ink2)'}, 'Break-even HUF 29,750'));
+    var cross = S('line', {x1:x(st4.amt), x2:x(st4.amt), y1:m.t, y2:H - m.b, stroke:'var(--ink2)', 'stroke-width':1});
+    var dot = S('circle', {cx:x(st4.amt), cy:y(rate(st4.amt)), r:4, fill:'var(--ac)', stroke:'var(--surface)', 'stroke-width':2});
+    svg.append(cross, dot);
+    var hit = S('rect', {x:m.l, y:m.t, width:W - m.l - m.r, height:H - m.t - m.b, fill:'transparent', 'data-keeptip':'1', style:'cursor:crosshair'});
+    function move(amt){ cross.setAttribute('x1', x(amt)); cross.setAttribute('x2', x(amt)); dot.setAttribute('cx', x(amt)); dot.setAttribute('cy', y(rate(amt))); }
+    hit.addEventListener('pointermove', function(e){
+      var bb = svg.getBoundingClientRect(), px = (e.clientX - bb.left) * (W / bb.width);
+      var amt = Math.round((X0 + (px - m.l) / (W - m.l - m.r) * (X1 - X0)) / 1000) * 1000;
+      amt = Math.min(X1, Math.max(X0, amt)); move(amt);
+      setTip({t:'HUF ' + nf(amt), v:'ATM ' + rate(amt).toFixed(1) + '%  |  Partner 4.0%', n:'Fee: ATM HUF ' + nf(Math.round(595 + amt * .02)) + ', partner HUF ' + nf(Math.round(amt * .04)), c:'var(--ac)'});
+      placeTip(e.clientX, e.clientY);
+    });
+    hit.addEventListener('pointerleave', function(){ hideTip(); move(st4.amt); });
+    svg.append(hit);
+    lineHost.append(legend([{c:'var(--ac2)', l:'Partner withdrawal (4%)'}, {c:'var(--ac)', l:'ATM withdrawal in the EU'}]), svg);
+  }
+  slider.addEventListener('input', function(){ st4.amt = +slider.value; paint(); });
+  promo.addEventListener('change', function(){ st4.promo = promo.checked; paint(); });
+
+  var cF = card({
+    title:'Gross fee per transaction', sub:'At the amount chosen in the filter panel.',
+    chart:function(b){ b.append(feeBody); },
+    note:'Illustrative. Limits are in EUR in the schedule (e.g. withdrawal max EUR 500) and the wallet currency is not named, so they are not applied. Partner commission and card scheme costs, which are not public, still have to be deducted.',
+    source:'aircash.eu/hu-HU/koltsegek, 20 Oct 2026; report section 6.6'
+  });
+  var cL = card({
+    title:'Effective fee rate by amount', sub:'Partner withdrawal (4%) vs Aircash ATM withdrawal in the EU (HUF 595 + 2%).',
+    chart:function(b){ b.append(lineHost); drawLine(); },
+    head:['Amount (HUF)', 'Partner withdrawal', 'ATM withdrawal (EU)'],
+    rows:[5000, 10000, 20000, 29750, 50000, 100000, 200000].map(function(a){ return [nf(a), '4.0%', rate(a).toFixed(1) + '%']; }), numCols:[0, 1, 2],
+    source:'calculated from aircash.eu/hu-HU/koltsegek'
+  });
+  var cC = card({
+    title:'Aircash vs Revolut vs banks with qvik',
+    chart:function(b){ b.append(table(['Criterion', 'Aircash', 'Revolut', 'Banks + qvik'], CM)); },
+    note:'Aircash’s unique advantage in Hungary is the bridge between cash and a digital wallet without a bank account, plus Abon. Weak points: a small network, no withdrawals at OMV, and no Hungarian-language app (the website is Hungarian; the app store lists 15 languages without Hungarian).',
+    source:'report sections 4.3 and 5'
+  });
+  var cS = card({
+    title:'Published fees and limits',
+    chart:function(b){ b.append(table(['Service', 'Fee', 'Limit / note'], FS)); },
+    note:'The schedule mixes HUF and EUR items and does not name the wallet currency. Abon is sold in HUF 2,000, 4,000, 8,000, 10,000 and 20,000. Money can be received from 161 countries via Ria.',
+    source:'aircash.eu/hu-HU/koltsegek, 20 Oct 2026; recharge.com/hu/hu/abon'
+  });
+  var sd = side([
+    {t:'Transaction amount', nodes:[amtOut, slider]},
+    {t:'Payout rate', nodes:E('label', {class:'ck'}, promo, E('span', null, 'Promotional 1% (until 31 Dec 2026)'))}
+  ], function(){ st4.amt = 20000; st4.promo = false; redo(); });
+
+  root.replaceChildren(frame({
+    title:'Fees and rivals', sub:'fee schedule of 20 Oct 2026',
+    chips: st4.promo ? [{l:'Promotional payout rate', rm:function(){ st4.promo = false; redo(); }}] : [],
+    insight:'Below about HUF 29,750 the 4% partner withdrawal is cheaper than Aircash’s own EU ATM fee (HUF 595 + 2%). This break-even is calculated from the fee schedule; the report does not state it.', est:true,
+    kpis:kpiBox, content:[E('div', {class:'grid g2'}, cF, cL), E('div', {class:'grid g2'}, cC, cS)], side:sd
+  }));
+  drawAll(root);
+  paint();
+}
+
+/* ---------- PAGE 5: plan ---------- */
+var PH = {
+  act:{n:'Activation (0-6 months)'},
+  cov:{n:'Coverage (6-18 months)'},
+  use:{n:'Use cases (12-24 months)'}
+};
+var INI = [
+  {id:1, n:'Activate and display MOL and Lapker', ph:'act', seg:[[0,3,'Upload points to the location finder',1],[3,6,'Launch campaign at the points',0]],
+    sit:'According to Aircash the contracts exist; the hu-HU location finder does not show the points.',
+    steps:'Agree the list of points and services; upload them; show partner names on the hu-HU site; cashier training material; launch campaign.',
+    kpi:'Live points, share of points that also offer withdrawal, active depositors per point per month.',
+    risk:'If points go live without customers knowing, there is no traffic at the till and the partner loses interest.'},
+  {id:2, n:'Clarify OMV withdrawals', ph:'act', seg:[[0,3,'Check the withdrawal flag or agree its introduction',1]],
+    sit:'The location finder marks all 162 Hungarian OMV points as having no withdrawal (data of 18 Jun 2026).',
+    steps:'If withdrawal works, correct the flag; if not, agree it with OMV. OMV is also a partner in Slovakia, so check a regional contract change.',
+    kpi:'Withdrawal-enabled points: 109 now, 271 if enabled (Estimate).', risk:'The data is from June 2026 and may have changed.'},
+  {id:3, n:'Full coverage of Exclusive Change', ph:'act', seg:[[3,6,'Connect the remaining branches',0]],
+    sit:'109 of nearly 300 branches; about 190 missing (Estimate).',
+    steps:'Rank the missing branches using transaction data from existing branches; joint remittance messaging in the best branches.',
+    kpi:'Share of branches covered; withdrawal transactions per branch.', risk:'Ranking needs per-branch transaction data that is not public.'},
+  {id:4, n:'Hungarian-language app', ph:'act', seg:[[0,3,'Plan the app language',1],[3,6,'Launch',0]],
+    sit:'The website is in Hungarian, the app is not, and Hungarian store reviews complain about it.',
+    steps:'Plan the language work, then launch the Hungarian version.',
+    kpi:'Share of Hungarian phone numbers that get from registration to successful verification, before and after launch.',
+    risk:'A financial app in a foreign language loses users at registration and identity verification.'},
+  {id:5, n:'Tobacco shops', ph:'cov', seg:[[6,12,'Negotiations with a tobacco shop service provider',1],[12,24,'Nationwide launch',0]],
+    sit:'5,619 shops (SZTFH, 15 Dec 2025), about 21 times today’s network (Estimate). In eastern Austria Aircash is in 798 tobacco shops.',
+    steps:'Not a chain, so no single chain-level contract. An entry point could be a provider that already serves the shops’ tills or supply; this group needs separate mapping.',
+    kpi:'Live shops, transactions per shop.', risk:'According to SZTFH data, the number of tobacco shops is falling.'},
+  {id:6, n:'Coop', ph:'cov', seg:[[6,12,'Negotiations',1],[12,24,'Launch',0]],
+    sit:'Close to 2,100 stores in about 1,400 settlements; the only grocery store in 879 settlements.',
+    steps:'Start with deposit and Abon, withdrawal up to a low limit, starting with one regional Coop member company.',
+    kpi:'Live stores, deposits and withdrawals per store.', risk:'How much cash a small shop’s till can support has to be assessed with the partner.'},
+  {id:7, n:'Grocery chains (Lidl, Aldi, Auchan, SPAR)', ph:'cov', seg:[[6,12,'Lidl negotiations, building on the Croatian and Slovenian relationship',1]],
+    sit:'Lidl 210 stores (2024), Aldi more than 180, Auchan 24 stores and 19 stations. Lidl (SI, HR) and SPAR, BILLA, PENNY (AT) are already partners elsewhere.',
+    steps:'Abon at the till or on the gift card rack: the lowest operational burden for a chain.',
+    kpi:'Abon sales per point.', risk:'In Austria only Abon is available at these points, so revenue per point is limited.'},
+  {id:8, n:'B2B wage payouts for foreign and gig workers', ph:'use', seg:[[6,12,'Pilot with one employer',1]],
+    sit:'About 106,000 foreign workers (KSH, 2025), some without a Hungarian bank account on arrival.',
+    steps:'Interviews with 3-5 large staffing agencies; review of Hungarian labour rules on which accounts wages can be paid to; pilot with one employer.',
+    kpi:'Pilot employers, wallets funded, share of wages used in fee-bearing ways.',
+    risk:'The restriction in force from 6 Jun 2026 on fast-track recruitment may reduce the number of new arrivals.'},
+  {id:9, n:'Abon at licensed gambling operators', ph:'use', seg:[[12,24,'Integration after legal review',0]],
+    sit:'Mastercard payments at gambling merchants carry a 3% fee, so Abon is the cheaper funding method for players.',
+    steps:'List of licensed operators from the SZTFH register; legal review of accepted funding methods; integration offer.',
+    kpi:'Abon sales through operators.', risk:'Reputational and AML compliance burden; the regulatory framework is not yet verified from SZTFH and legal sources.'},
+  {id:10, n:'Remittance messaging', ph:'use', seg:[],
+    sit:'Existing product, no development: Ria-based money receipt (161 countries) and P2P.',
+    steps:'Present them in Exclusive Change branches and at companies employing foreign workers.',
+    kpi:'Not specified in the report.', risk:'Timing is not set in the report.'}
+];
+var SEG = [
+  ['Foreign workers', 'About 106,000 in 2025; largest community Ukrainian, plus about 11,000 Filipino, 9,600 Chinese, over 8,000 Vietnamese (KSH)', 'Strong', 'Often no Hungarian bank account on arrival, and they send money home. A rule from 6 Jun 2026 limits fast-track recruitment, which may slow growth.'],
+  ['Small-value cash shoppers', '60% of payments below HUF 5,000 are in cash (MNB, 2025)', 'Medium', 'Abon and cash top-ups give online payment options without a bank account. For bank customers, qvik and cards are more convenient.'],
+  ['Tourists and travellers from the region', 'Users in Croatia, Slovenia, Austria, Slovakia and Romania know the product; motorway OMV stations and exchange offices are in the network', 'Medium', 'Regional users can top up and withdraw in Hungary too.'],
+  ['Online gambling and sports betting', 'Abon sold in HUF denominations; Mastercard at gambling merchants costs 3%', 'Medium', 'Abon is the cheaper funding method. The regulatory framework must be assessed from SZTFH sources.'],
+  ['Rural settlements without ATMs', 'Coop is the only grocery store in 879 settlements; more than 700 settlements without a tobacco shop (Economx, citing 24.hu)', 'Longer term', 'The village shop could become the cash deposit and withdrawal point if the partner agrees.']
+];
+var glyph = {'Strong':'● Strong', 'Medium':'◐ Medium', 'Longer term':'○ Longer term'};
+var st5 = {ph:new Set()};
+function page5(root){
+  var PHL = Object.keys(PH).map(function(k){ return {id:k, label:PH[k].n}; });
+  var list = INI.filter(function(i){ return !st5.ph.size || st5.ph.has(i.ph); });
+  var cnt = function(k){ return INI.filter(function(i){ return i.ph === k && (!st5.ph.size || st5.ph.has(k)); }).length; };
+  var tiles = kpis([
+    {label:'Initiatives shown', value:list.length + ' of 10', foot:'over a 24-month horizon', bar:pct(list.length, 10)},
+    {label:'Activation', value:String(cnt('act')), badge:{t:'0-6 months', k:'neu'}, foot:'use what is already signed'},
+    {label:'Coverage', value:String(cnt('cov')), badge:{t:'6-18 months', k:'neu'}, foot:'one nationwide mass network'},
+    {label:'Use cases', value:String(cnt('use')), badge:{t:'12-24 months', k:'neu'}, foot:'wages, remittances, Abon'},
+    {label:'Network potential: tobacco shops', value:'~21×', badge:{t:'5,619', k:'neu'}, foot:'vs 271 points today', est:true}
+  ]);
+
+  var cG = card({
+    title:'Timeline', sub:'Months from the start of the plan. Light bars: preparation or negotiation. Dark bars: launch or live.',
+    chart:function(b){
+      b.append(legend([{c:'var(--ac2)', l:'Preparation / negotiation'}, {c:'var(--ac)', l:'Launch / live'}]));
+      var maxM = 24, ticks = [0, 3, 6, 12, 18, 24];
+      var g = E('div', {class:'gantt'});
+      g.append(E('div', {class:'ggrid'}, ticks.map(function(t){ return E('i', {style:'left:' + (t / maxM * 100) + '%'}); })),
+        E('div', {class:'gaxis'}, ticks.map(function(t){ return E('span', {style: t === maxM ? 'left:100%;transform:translateX(-100%)' : 'left:' + (t / maxM * 100) + '%'}, t === 0 ? '0' : t + ' mo'); })));
+      Object.keys(PH).forEach(function(k){
+        var items = list.filter(function(i){ return i.ph === k; });
+        if (!items.length) return;
+        g.append(E('div', {class:'gph'}, PH[k].n));
+        items.forEach(function(i){
+          var tr = E('div', {class:'gtrack'});
+          if (!i.seg.length) tr.append(E('span', {class:'nobar'}, 'Timing not specified in the report'));
+          i.seg.forEach(function(s){
+            var col = s[3] ? 'var(--ac2)' : 'var(--ac)';
+            tr.append(E('div', {class:'gbar', tabindex:'0', style:'left:' + (s[0] / maxM * 100) + '%;width:calc(' + ((s[1] - s[0]) / maxM * 100) + '% - 2px);background:' + col,
+              'data-tt':i.n, 'data-tv':'Months ' + s[0] + '-' + s[1], 'data-tn':s[2], 'data-tc':col, role:'img', 'aria-label':i.n + ', months ' + s[0] + ' to ' + s[1] + ': ' + s[2]}));
+          });
+          g.append(E('div', {class:'grow'}, E('div', {class:'blabel'}, i.id + '. ' + i.n), tr));
+        });
+      });
+      if (!list.length) g.append(E('p', {class:'csub'}, 'No initiatives match the filter.'));
+      b.append(g);
+    },
+    head:['Initiative', 'Phase', 'Months', 'What happens'],
+    rows:list.reduce(function(a, i){
+      if (!i.seg.length) a.push([i.id + '. ' + i.n, PH[i.ph].n, 'not specified', 'Timing is not set in the report']);
+      i.seg.forEach(function(s){ a.push([i.id + '. ' + i.n, PH[i.ph].n, s[0] + '-' + s[1], s[2]]); });
+      return a;
+    }, []),
+    source:'report sections 6.3, 6.4 and 6.7'
+  });
+  var cD = card({
+    title:'Initiatives in detail', sub:'Open an initiative for situation, steps, KPIs and risk.',
+    chart:function(b){
+      list.forEach(function(i){
+        b.append(E('details', {class:'ini'},
+          E('summary', null, i.id + '. ' + i.n, E('span', {class:'ph'}, PH[i.ph].n)),
+          E('div', {class:'idet'},
+            E('p', null, E('b', null, 'Situation: '), i.sit),
+            E('p', null, E('b', null, 'Steps: '), i.steps),
+            E('p', null, E('b', null, 'KPIs: '), i.kpi),
+            E('p', null, E('b', null, 'Risk: '), i.risk))));
+      });
+      if (!list.length) b.append(E('p', {class:'csub'}, 'No initiatives match the filter.'));
+    },
+    source:'report section 6.4'
+  });
+  var cS = card({
+    title:'Target segments', sub:'Fit as assessed in the report.',
+    chart:function(b){ b.append(table(['Segment', 'Evidence', 'Fit', 'Rationale'], SEG.map(function(s){ return [s[0], s[1], E('span', {class:'fit'}, glyph[s[2]]), s[3]]; }))); },
+    source:'report section 6.2 (KSH, MNB, Economx)'
+  });
+  var cP = card({
+    title:'What motivates partners, and what holds them back',
+    sub:'Partner contracts are not public: industry logic, not contract data.',
+    chart:function(b){
+      b.append(E('div', {class:'grid g2'},
+        E('div', null, E('h3', {style:'margin-bottom:6px'}, 'Incentives'), E('ul', {class:'plain'},
+          E('li', null, 'Little investment: the service runs on the existing till, with barcode identification.'),
+          E('li', null, 'Commission per transaction on Abon sales, deposits and withdrawals.'),
+          E('li', null, 'Extra shoppers: top-up and Abon customers often buy something else too.'),
+          E('li', null, 'Cash handling: withdrawals recycle incoming cash on site.'),
+          E('li', null, 'Exclusive Change: a digital product next to its branch network; OMV, MOL: shop revenue and transit traffic; Lapker already works as a payment point.'))),
+        E('div', null, E('h3', {style:'margin-bottom:6px'}, 'Obstacles'), E('ul', {class:'plain'},
+          E('li', null, 'AML and reputational risk, especially because of the gambling connection.'),
+          E('li', null, 'Cashier training and the cash held in the till.'),
+          E('li', null, 'An existing voucher partner on the shelf.'),
+          E('li', null, 'Slow ramp-up if Hungarian customer numbers are small.'))))); },
+    note:'A partner supports the product if it sees traffic in the first months, so every launch needs a launch campaign and per-point transaction tracking.',
+    source:'report section 6.5'
+  });
+  var cX = card({
+    title:'What this dashboard cannot show', sub:'The report’s own data gaps. A performance dashboard needs Aircash’s per-point transaction data.',
+    chart:function(b){ b.append(E('ul', {class:'plain'},
+      E('li', null, 'Hungarian user numbers, volumes and market share: no public data.'),
+      E('li', null, 'Number of points, services and launch date of MOL and Lapker: no public data.'),
+      E('li', null, 'Total size of the Hungarian OMV, MOL and Lapker networks: not verified.'),
+      E('li', null, 'OMV point data dates from 18 Jun 2026; withdrawal functionality may have changed since.'),
+      E('li', null, 'Currency of the Hungarian wallet: the fee schedule mixes HUF and EUR and does not name it.'),
+      E('li', null, 'Bank-level market shares; Hungarian volumes of Barion, SimplePay and paysafecard: no public data.'),
+      E('li', null, 'Hungarian regulatory framework for online gambling: not yet verified from SZTFH and legal sources.'))); },
+    note:'Required improvements, ranked: (1) add the Hungarian MOL and Lapker points to the location finder, with numbers of points and services; (2) request volume data per point, at least aggregated per partner chain.',
+    source:'report sections 7 and 8'
+  });
+  var cM = card({
+    title:'Metrics to track',
+    chart:function(b){ b.append(E('ul', {class:'plain'},
+      E('li', null, 'Live points per partner, of which withdrawal-enabled.'),
+      E('li', null, 'Monthly active Hungarian users.'),
+      E('li', null, 'Deposit and withdrawal transactions per point per month.'),
+      E('li', null, 'Share of deposited money used in fee-bearing ways.'),
+      E('li', null, 'Share of users getting from registration to successful verification.'),
+      E('li', null, 'Abon sales per point.'))); },
+    source:'report section 6.8'
+  });
+  var sd = side([{t:'Phase', nodes:checks('ph', PHL, st5.ph)}], function(){ st5.ph.clear(); redo(); });
+  root.replaceChildren(frame({
+    title:'Plan', sub:'24-month horizon, three phases',
+    chips:chipsFor(PHL, st5.ph),
+    insight:'Activate what is already signed first (MOL, Lapker, OMV withdrawals, remaining Exclusive Change branches, a Hungarian app). Then bring in one nationwide mass network, and last the new use cases.',
+    kpis:tiles, content:[cG, cD, E('div', {class:'grid g2'}, cS, cP), E('div', {class:'grid g2'}, cX, cM)], side:sd
+  }));
+  drawAll(root);
+}
+
+/* ---------- shell: tabs, routing, theme ---------- */
+var PAGES = [
+  {id:'network',   label:'Network',        fn:page1},
+  {id:'potential', label:'Potential',      fn:page2},
+  {id:'market',    label:'Market',         fn:page3},
+  {id:'product',   label:'Fees and rivals', fn:page4},
+  {id:'plan',      label:'Plan',           fn:page5}
+];
+var main = document.getElementById('main'), tabs = document.getElementById('tabs');
+var panels = {}, current = null;
+PAGES.forEach(function(p){
+  var b = E('button', {type:'button', role:'tab', class:'tab', id:'tab-' + p.id, 'aria-controls':'p-' + p.id, 'aria-selected':'false'}, p.label);
+  b.addEventListener('click', function(){ show(p.id); });
+  b.addEventListener('keydown', function(e){
+    var i = PAGES.indexOf(p), j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+    if (j > -1 && PAGES[j]){ e.preventDefault(); show(PAGES[j].id); document.getElementById('tab-' + PAGES[j].id).focus(); }
+  });
+  tabs.append(b);
+  var pn = E('section', {class:'panel', role:'tabpanel', id:'p-' + p.id, 'aria-labelledby':'tab-' + p.id, hidden:true});
+  main.append(pn); panels[p.id] = pn;
+});
+function pageOf(id){ return PAGES.filter(function(p){ return p.id === id; })[0]; }
+function show(id, noHash){
+  if (!panels[id]) id = PAGES[0].id;
+  hideTip();
+  PAGES.forEach(function(p){
+    var on = p.id === id;
+    panels[p.id].hidden = !on;
+    document.getElementById('tab-' + p.id).setAttribute('aria-selected', String(on));
+  });
+  current = id;
+  pageOf(id).fn(panels[id]);
+  if (!noHash){ try { history.replaceState(null, '', '#' + id); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+function redo(){
+  var a = document.activeElement, f = a && a.getAttribute ? a.getAttribute('data-fid') : null, y = window.scrollY;
+  hideTip();
+  pageOf(current).fn(panels[current]);
+  window.scrollTo(0, y);
+  if (f){ var n = panels[current].querySelector('[data-fid="' + f + '"]'); if (n) n.focus(); }
+}
+var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(function(){ if (current === 'product') redo(); }, 150); });
+window.addEventListener('beforeprint', function(){ PAGES.forEach(function(p){ if (p.id !== current) p.fn(panels[p.id]); }); });
+
+var themeBtn = document.getElementById('themeBtn'), modes = ['auto', 'light', 'dark'], mi = 0;
+themeBtn.addEventListener('click', function(){
+  mi = (mi + 1) % 3; var m = modes[mi];
+  if (m === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', m);
+  themeBtn.textContent = 'Theme: ' + m.charAt(0).toUpperCase() + m.slice(1);
+});
+
+show((location.hash || '').replace('#', '') || PAGES[0].id, true);
+})();
+</script>
+</body>
+</html>
